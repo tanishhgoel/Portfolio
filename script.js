@@ -99,6 +99,77 @@ function drawBlob() {
   ctx.globalCompositeOperation = "source-over";
 }
 
+const bubbles = [];
+const maxBubbles = 25; // Maximum number of bubbles to show
+
+function createBubble(x, y, velX, velY) {
+  return {
+    x,
+    y,
+    radius: Math.random() * 5 + 3, // Random size between 3-8
+    velocityX: velX * 0.2 + (Math.random() - 0.5) * 0.5, // Use cursor movement but add some randomness
+    velocityY: velY * 0.2 + (Math.random() - 0.5) * 0.5,
+    opacity: 0.7, // Start with mid opacity
+    decayRate: 0.01 + Math.random() * 0.02, // Random fade speed
+  };
+}
+
+function updateBubbles() {
+  // Create new bubbles based on cursor movement
+  if (Math.abs(velocity.x) > 2 || Math.abs(velocity.y) > 2) {
+    // Calculate position on the opposite side of cursor movement
+    // This makes bubbles appear to trail behind the movement
+    const angle = Math.atan2(velocity.y, velocity.x) + Math.PI; // Add PI to get opposite direction
+
+    // Find a random point on the blob outline in the general direction of the angle
+    const randomAngleOffset = (Math.random() - 0.5) * 0.8; // Random offset within ±0.4 radians
+    const emissionAngle = angle + randomAngleOffset;
+
+    // Get a point from the blob outline to spawn the bubble
+    const pointIndex = Math.floor(
+      (emissionAngle / (2 * Math.PI)) * points.length
+    );
+    const spawnPoint =
+      points[pointIndex >= 0 && pointIndex < points.length ? pointIndex : 0];
+
+    // Create bubble at the emission point, offset by the blob's current position
+    if (
+      bubbles.length < maxBubbles &&
+      (Math.abs(velocity.x) > 3 || Math.abs(velocity.y) > 3)
+    ) {
+      bubbles.push(
+        createBubble(
+          mouse.x + spawnPoint.x,
+          mouse.y + spawnPoint.y,
+          -velocity.x, // Inverse velocity
+          -velocity.y
+        )
+      );
+    }
+  }
+
+  // Update existing bubbles
+  for (let i = bubbles.length - 1; i >= 0; i--) {
+    const bubble = bubbles[i];
+
+    // Move the bubble
+    bubble.x += bubble.velocityX;
+    bubble.y += bubble.velocityY;
+
+    // Slow down over time
+    bubble.velocityX *= 0.98;
+    bubble.velocityY *= 0.98;
+
+    // Fade out
+    bubble.opacity -= bubble.decayRate;
+
+    // Remove faded bubbles
+    if (bubble.opacity <= 0) {
+      bubbles.splice(i, 1);
+    }
+  }
+}
+
 // ===================
 // Orange Overlay + Blob Reveal
 // ===================
@@ -126,9 +197,28 @@ function drawOverlay() {
 // ===================
 function draw() {
   ctx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+
+  // First draw the orange overlay
   drawOverlay();
+
+  // Then update and draw the blob (with destination-out)
   updateBlob();
   drawBlob();
+
+  // Now draw bubbles with correct blending mode
+  ctx.globalCompositeOperation = "source-over"; // Reset to default blending
+
+  // Draw each bubble
+  bubbles.forEach((bubble) => {
+    ctx.beginPath();
+    ctx.arc(bubble.x, bubble.y, bubble.radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255, 255, 255, ${bubble.opacity})`; // White bubbles for better visibility
+    ctx.fill();
+  });
+
+  // Update bubbles for next frame
+  updateBubbles();
+
   requestAnimationFrame(draw);
 }
 draw();
