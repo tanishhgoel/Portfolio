@@ -1,70 +1,49 @@
-const canvas = document.getElementById("overlay");
-const ctx = canvas.getContext("2d");
+// ===================
+// Canvas Setup
+// ===================
+const backgroundCanvas = document.getElementById("background-canvas");
+const overlayCanvas = document.getElementById("overlay");
+const ctx = overlayCanvas.getContext("2d");
 
 function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  backgroundCanvas.width = window.innerWidth;
+  backgroundCanvas.height = window.innerHeight;
+  overlayCanvas.width = window.innerWidth;
+  overlayCanvas.height = window.innerHeight;
 }
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
+// ===================
+// Mouse Tracking
+// ===================
 let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 let lastMouse = { x: mouse.x, y: mouse.y };
 let velocity = { x: 0, y: 0 };
+
 window.addEventListener("mousemove", (e) => {
   mouse.x = e.clientX;
   mouse.y = e.clientY;
 });
 
-let bubbles = [];
-
-class Bubble {
-  constructor(x, y) {
-    this.x = x + (Math.random() - 0.5) * 60;
-    this.y = y + (Math.random() - 0.5) * 60;
-    this.radius = Math.random() * 8 + 3;
-    this.alpha = 1;
-    this.speedY = Math.random() * -0.5 - 0.3;
-    this.speedX = (Math.random() - 0.5) * 0.5;
-  }
-
-  update() {
-    this.y += this.speedY;
-    this.x += this.speedX;
-    this.alpha -= 0.01;
-  }
-
-  draw() {
-    ctx.globalAlpha = this.alpha;
-    ctx.beginPath();
-    ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.globalAlpha = 1.0;
-  }
-}
-
-// Blob setup
+// ===================
+// Blob Setup
+// ===================
 const numPoints = 32;
 const radius = 375;
 const tension = 0.04;
 const drag = 0.3;
 
 let points = [];
-
 for (let i = 0; i < numPoints; i++) {
   const angle = (i / numPoints) * 2 * Math.PI;
   points.push({
-    angle: angle,
+    angle,
     x: Math.cos(angle) * radius,
     y: Math.sin(angle) * radius,
     vx: 0,
     vy: 0,
   });
-}
-
-function lerp(a, b, t) {
-  return a + (b - a) * t;
 }
 
 function updateBlob() {
@@ -74,10 +53,8 @@ function updateBlob() {
   lastMouse.y = mouse.y;
 
   const mag = Math.sqrt(velocity.x ** 2 + velocity.y ** 2);
-  const normVel = {
-    x: mag > 0 ? velocity.x / mag : 0,
-    y: mag > 0 ? velocity.y / mag : 0,
-  };
+  const normVel =
+    mag > 0 ? { x: velocity.x / mag, y: velocity.y / mag } : { x: 0, y: 0 };
 
   for (let p of points) {
     const targetX = Math.cos(p.angle) * radius;
@@ -87,11 +64,8 @@ function updateBlob() {
     const influence = normal.x * normVel.x + normal.y * normVel.y;
     const offset = influence * mag * 0.7;
 
-    p.vx += (targetX - p.x) * tension;
-    p.vy += (targetY - p.y) * tension;
-
-    p.vx += normVel.x * offset * drag;
-    p.vy += normVel.y * offset * drag;
+    p.vx += (targetX - p.x) * tension + normVel.x * offset * drag;
+    p.vy += (targetY - p.y) * tension + normVel.y * offset * drag;
 
     p.vx *= 0.92;
     p.vy *= 0.92;
@@ -107,9 +81,9 @@ function drawBlob() {
   ctx.globalCompositeOperation = "destination-out";
 
   ctx.beginPath();
-  for (let i = 0; i < numPoints; i++) {
+  for (let i = 0; i < points.length; i++) {
     const p1 = points[i];
-    const p2 = points[(i + 1) % numPoints];
+    const p2 = points[(i + 1) % points.length];
     const cpX = (p1.x + p2.x) / 2;
     const cpY = (p1.y + p2.y) / 2;
     if (i === 0) {
@@ -121,65 +95,104 @@ function drawBlob() {
   ctx.closePath();
   ctx.fill();
   ctx.restore();
+
   ctx.globalCompositeOperation = "source-over";
 }
 
-// Three.js setup
+// ===================
+// Orange Overlay + Blob Reveal
+// ===================
+function drawOverlay() {
+  // Draw full orange layer
+  const gradient = ctx.createRadialGradient(
+    mouse.x,
+    mouse.y,
+    100,
+    mouse.x,
+    mouse.y,
+    overlayCanvas.width * 0.8
+  );
+  gradient.addColorStop(0, "#ffa500ee");
+  gradient.addColorStop(1, "#ffa500cc");
+
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+}
+
+// ===================
+// Draw Loop
+// ===================
+function draw() {
+  ctx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+  drawOverlay();
+  updateBlob();
+  drawBlob();
+  requestAnimationFrame(draw);
+}
+draw();
+
+// ===================
+// 3D Setup (Three.js)
+// ===================
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
   75,
   window.innerWidth / window.innerHeight,
-  0.1,
+  1,
   1000
 );
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+camera.position.z = 100;
+
+const renderer = new THREE.WebGLRenderer({
+  canvas: backgroundCanvas,
+  alpha: true,
+  antialias: true,
+});
 renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+renderer.setPixelRatio(window.devicePixelRatio);
 
-// Green cube
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
+// Lighting
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+scene.add(ambientLight);
 
-camera.position.z = 5;
+const pointLight = new THREE.PointLight(0xffaa00, 1, 300);
+pointLight.position.set(50, 50, 50);
+scene.add(pointLight);
 
-// Animation loop
-function animate() {
-  requestAnimationFrame(animate);
+// Spheres
+const spheres = [];
+const group = new THREE.Group();
+scene.add(group);
 
-  // Rotate the cube for effect
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
+const sphereGeometry = new THREE.SphereGeometry(5, 32, 32);
+const sphereMaterial = new THREE.MeshStandardMaterial({
+  color: 0xffaa00,
+  metalness: 0.3,
+  roughness: 0.4,
+  transparent: true,
+  opacity: 0.3,
+});
 
-  // Render the 3D scene
+for (let i = 0; i < 15; i++) {
+  const mesh = new THREE.Mesh(sphereGeometry, sphereMaterial.clone());
+  mesh.position.set(
+    (Math.random() - 0.5) * 300,
+    (Math.random() - 0.5) * 300,
+    (Math.random() - 0.5) * 300
+  );
+  group.add(mesh);
+  spheres.push({ mesh, rotationSpeed: Math.random() * 0.02 + 0.005 });
+}
+
+// Animate 3D
+function animate3D() {
+  requestAnimationFrame(animate3D);
+  group.rotation.y += 0.003;
+  group.rotation.x += 0.001;
+  spheres.forEach(({ mesh, rotationSpeed }) => {
+    mesh.rotation.x += rotationSpeed;
+    mesh.rotation.y += rotationSpeed;
+  });
   renderer.render(scene, camera);
 }
-
-// Start the Three.js animation
-animate();
-
-// Main draw loop
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Orange fill for 2D content
-  ctx.fillStyle = "orange";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Update and draw 2D blob
-  updateBlob();
-  drawBlob();
-
-  // Draw 2D bubbles
-  bubbles.push(new Bubble(mouse.x, mouse.y));
-  bubbles = bubbles.filter((b) => b.alpha > 0);
-  bubbles.forEach((b) => {
-    b.update();
-    b.draw();
-  });
-
-  requestAnimationFrame(draw);
-}
-
-draw();
+animate3D();
