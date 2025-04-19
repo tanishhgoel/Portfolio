@@ -1,3 +1,40 @@
+// scroll.js
+
+// === Bubble sound setup on cursor movement ===
+const bubbleSound = new Audio("bubble3.mp3");
+bubbleSound.volume = 0.1;
+
+let audioInitialized = false;
+let movementThrottle = false;
+
+function initializeAudioContext() {
+  if (!audioInitialized) {
+    bubbleSound.play().catch(() => {});
+    audioInitialized = true;
+  }
+}
+
+function playBubbleSound() {
+  if (!movementThrottle && audioInitialized) {
+    movementThrottle = true;
+    bubbleSound.currentTime = 0;
+    bubbleSound.play().catch(() => {});
+    setTimeout(() => {
+      movementThrottle = false;
+    }, 500); // Adjust delay between sound plays
+  }
+}
+
+// Unlock audio context once via click/tap
+window.addEventListener("click", initializeAudioContext);
+window.addEventListener("touchstart", initializeAudioContext);
+
+// Play sound on mouse movement
+window.addEventListener("mousemove", () => {
+  initializeAudioContext();
+  playBubbleSound();
+});
+
 // Wait for the DOM to be fully loaded
 document.addEventListener("DOMContentLoaded", () => {
   // Initialize GSAP ScrollTrigger
@@ -35,6 +72,18 @@ function createScrollMarkers() {
 
   document.body.appendChild(heroMarker);
   document.body.appendChild(portfolioMarker);
+}
+
+function updateBlobOnScroll() {
+  window.addEventListener("scroll", () => {
+    const scrollPercent =
+      window.scrollY / (document.body.scrollHeight - window.innerHeight);
+    const virtualMouseY = window.innerHeight * (0.5 + scrollPercent * 0.5);
+
+    if (typeof mouse !== "undefined") {
+      mouse.y = mouse.y * 0.7 + virtualMouseY * 0.3;
+    }
+  });
 }
 
 function initSectionAnimations() {
@@ -124,23 +173,5 @@ function setupProjectBubbles() {
         duration: 0.3,
       });
     });
-  });
-}
-
-function updateBlobOnScroll() {
-  // This function modifies the existing blob behavior to also respond to scroll position
-  window.addEventListener("scroll", () => {
-    // Get the scroll position as a percentage of the page
-    const scrollPercent =
-      window.scrollY / (document.body.scrollHeight - window.innerHeight);
-
-    // Create a "virtual" mouse position that also takes into account the scroll position
-    const virtualMouseY = window.innerHeight * (0.5 + scrollPercent * 0.5);
-
-    // Only update the Y position based on scroll, let the actual mousemove update the X
-    if (typeof mouse !== "undefined") {
-      // Keep the X position based on actual mouse, but influence Y by scroll
-      mouse.y = mouse.y * 0.7 + virtualMouseY * 0.3;
-    }
   });
 }

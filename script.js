@@ -404,6 +404,14 @@ window.addEventListener("scroll", () => {
   lastScrollY = currentScrollY;
 });
 
+window.addEventListener("resize", () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+
+
 // Animate 3D
 function animate3D() {
   requestAnimationFrame(animate3D);
