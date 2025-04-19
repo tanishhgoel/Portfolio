@@ -9,6 +9,8 @@ resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
 let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+let lastMouse = { x: mouse.x, y: mouse.y };
+let velocity = { x: 0, y: 0 };
 window.addEventListener("mousemove", (e) => {
   mouse.x = e.clientX;
   mouse.y = e.clientY;
@@ -42,21 +44,108 @@ class Bubble {
   }
 }
 
+// Blob setup
+const numPoints = 32;
+const radius = 375;
+// changed from 0.05 to 0.04
+// weaker pullback = wobblier blob
+const tension = 0.04;
+// changed from 0.2 to 0.5
+// stronger push from movement = more responsive blob
+const drag = 0.3;
+
+let points = [];
+
+// Initialize soft-body points
+for (let i = 0; i < numPoints; i++) {
+  const angle = (i / numPoints) * 2 * Math.PI;
+  points.push({
+    angle: angle,
+    x: Math.cos(angle) * radius,
+    y: Math.sin(angle) * radius,
+    vx: 0,
+    vy: 0,
+  });
+}
+
+// Helper for smoothing
+function lerp(a, b, t) {
+  return a + (b - a) * t;
+}
+
+function updateBlob() {
+  velocity.x = mouse.x - lastMouse.x;
+  velocity.y = mouse.y - lastMouse.y;
+  lastMouse.x = mouse.x;
+  lastMouse.y = mouse.y;
+
+  const mag = Math.sqrt(velocity.x ** 2 + velocity.y ** 2);
+  const normVel = {
+    x: mag > 0 ? velocity.x / mag : 0,
+    y: mag > 0 ? velocity.y / mag : 0,
+  };
+
+  for (let p of points) {
+    const targetX = Math.cos(p.angle) * radius;
+    const targetY = Math.sin(p.angle) * radius;
+
+    const normal = { x: -Math.sin(p.angle), y: Math.cos(p.angle) };
+    const influence = normal.x * normVel.x + normal.y * normVel.y;
+    //changed from 0.4 to 0.55
+    // to make the blob more responsive to mouse movement
+    const offset = influence * mag * 0.7;
+
+    p.vx += (targetX - p.x) * tension;
+    p.vy += (targetY - p.y) * tension;
+
+    p.vx += normVel.x * offset * drag;
+    p.vy += normVel.y * offset * drag;
+
+    // changed from 0.9 to 0.92
+    // less damping, longer wobble
+    p.vx *= 0.92;
+    p.vy *= 0.92;
+
+    p.x += p.vx;
+    p.y += p.vy;
+  }
+}
+
+function drawBlob() {
+  ctx.save();
+  ctx.translate(mouse.x, mouse.y);
+  ctx.globalCompositeOperation = "destination-out";
+
+  ctx.beginPath();
+  for (let i = 0; i < numPoints; i++) {
+    const p1 = points[i];
+    const p2 = points[(i + 1) % numPoints];
+    const cpX = (p1.x + p2.x) / 2;
+    const cpY = (p1.y + p2.y) / 2;
+    if (i === 0) {
+      ctx.moveTo(cpX, cpY);
+    } else {
+      ctx.quadraticCurveTo(p1.x, p1.y, cpX, cpY);
+    }
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+  ctx.globalCompositeOperation = "source-over";
+}
+
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Fill with orange
+  // Orange fill
   ctx.fillStyle = "orange";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Transparent reveal circle
-  ctx.globalCompositeOperation = "destination-out";
-  ctx.beginPath();
-  ctx.arc(mouse.x, mouse.y, 375, 0, Math.PI * 2); // Increased radius
-  ctx.fill();
-  ctx.globalCompositeOperation = "source-over";
+  // Update and draw blob
+  updateBlob();
+  drawBlob();
 
-  // Add and draw bubbles
+  // Draw bubbles
   bubbles.push(new Bubble(mouse.x, mouse.y));
   bubbles = bubbles.filter((b) => b.alpha > 0);
   bubbles.forEach((b) => {
