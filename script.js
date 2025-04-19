@@ -112,8 +112,8 @@ function drawOverlay() {
     mouse.y,
     overlayCanvas.width * 0.8
   );
-  gradient.addColorStop(0, "#ffa500ee");
-  gradient.addColorStop(1, "#ffa500cc");
+  gradient.addColorStop(0, "#ffa500");
+  gradient.addColorStop(1, "#ffa500");
 
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, overlayCanvas.width, overlayCanvas.height);
@@ -152,25 +152,64 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 
 // Lighting
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
-scene.add(ambientLight);
+// White hemisphere light with softer intensity
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6);
+scene.add(hemiLight);
 
-const pointLight = new THREE.PointLight(0xffaa00, 1, 300);
-pointLight.position.set(50, 50, 50);
+// White directional light with reduced intensity
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.4);
+dirLight.position.set(100, 100, 100);
+scene.add(dirLight);
+
+// White point light, subtle glow
+const pointLight = new THREE.PointLight(0xffffff, 0.8, 200);
+pointLight.position.set(0, 0, 50);
 scene.add(pointLight);
+
+const bottomRightLight = new THREE.PointLight(0xffa500, 2, 500);
+bottomRightLight.position.set(150, -150, 100);
+scene.add(bottomRightLight);
+
+const bottomLeftLight = new THREE.PointLight(0xffa500, 2, 500);
+bottomLeftLight.position.set(-150, -150, 100);
+scene.add(bottomLeftLight);
+
+hemiLight.intensity = 0.8;
+dirLight.intensity = 0.5;
+pointLight.intensity = 1.0;
 
 // Spheres
 const spheres = [];
 const group = new THREE.Group();
 scene.add(group);
 
-const sphereGeometry = new THREE.SphereGeometry(5, 32, 32);
-const sphereMaterial = new THREE.MeshStandardMaterial({
-  color: 0xffaa00,
-  metalness: 0.3,
-  roughness: 0.4,
+const sphereGeometry = new THREE.SphereGeometry(10, 32, 32);
+
+const sphereMaterial = new THREE.ShaderMaterial({
   transparent: true,
-  opacity: 0.3,
+  uniforms: {
+    color: { value: new THREE.Color(0xffa500) }, // orange tint
+    fresnelPower: { value: 2.5 },
+  },
+  vertexShader: `
+    varying float vFresnel;
+
+    void main() {
+      vec3 viewDir = normalize(cameraPosition - (modelViewMatrix * vec4(position, 1.0)).xyz);
+      vec3 normalDir = normalize(normalMatrix * normal);
+      vFresnel = pow(1.0 - dot(viewDir, normalDir), 2.5);
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    uniform vec3 color;
+    varying float vFresnel;
+
+    void main() {
+      vec3 glow = color * vFresnel;
+      gl_FragColor = vec4(glow, vFresnel + 0.1); // soft edge glow, faint center
+    }
+  `,
 });
 
 for (let i = 0; i < 15; i++) {
