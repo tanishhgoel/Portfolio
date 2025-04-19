@@ -103,7 +103,7 @@ function drawBlob() {
 // Orange Overlay + Blob Reveal
 // ===================
 function drawOverlay() {
-  // Draw full orange layer
+  // Draw full orange layer with reduced opacity for better visibility
   const gradient = ctx.createRadialGradient(
     mouse.x,
     mouse.y,
@@ -112,11 +112,13 @@ function drawOverlay() {
     mouse.y,
     overlayCanvas.width * 0.8
   );
-  gradient.addColorStop(0, "#ffa500");
+  gradient.addColorStop(0, "#ffa500"); // Orange color
   gradient.addColorStop(1, "#ffa500");
 
   ctx.fillStyle = gradient;
+  ctx.globalAlpha = 1; // Reduce overall opacity
   ctx.fillRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+  ctx.globalAlpha = 1.0; // Reset alpha
 }
 
 // ===================
@@ -178,11 +180,12 @@ hemiLight.intensity = 0.8;
 dirLight.intensity = 0.5;
 pointLight.intensity = 1.0;
 
+// Create containers for different bubble groups
+const heroSpheres = new THREE.Group();
+scene.add(heroSpheres);
+
 // Spheres
 const spheres = [];
-const group = new THREE.Group();
-scene.add(group);
-
 const sphereGeometry = new THREE.SphereGeometry(10, 32, 32);
 
 const sphereMaterial = new THREE.ShaderMaterial({
@@ -212,26 +215,119 @@ const sphereMaterial = new THREE.ShaderMaterial({
   `,
 });
 
+// Create spheres and add data for animation
 for (let i = 0; i < 15; i++) {
   const mesh = new THREE.Mesh(sphereGeometry, sphereMaterial.clone());
+
+  // Set initial position
   mesh.position.set(
     (Math.random() - 0.5) * 300,
     (Math.random() - 0.5) * 300,
     (Math.random() - 0.5) * 300
   );
-  group.add(mesh);
-  spheres.push({ mesh, rotationSpeed: Math.random() * 0.02 + 0.005 });
+
+  // Add to hero spheres group
+  heroSpheres.add(mesh);
+
+  // Store important properties for animation
+  spheres.push({
+    mesh,
+    rotationSpeed: Math.random() * 0.02 + 0.005,
+    initialY: mesh.position.y,
+    velocityY: 0,
+  });
 }
+
+// Scroll state tracking
+let lastScrollY = window.scrollY;
+let scrollDirection = 0; // 0: none, 1: down, -1: up
+let scrollingToPortfolio = false;
+let scrollingToHero = false;
+
+// Listen for scroll events
+window.addEventListener("scroll", () => {
+  const currentScrollY = window.scrollY;
+  const scrollDiff = currentScrollY - lastScrollY;
+
+  // Determine scroll direction
+  if (scrollDiff > 0) {
+    scrollDirection = 1; // scrolling down
+  } else if (scrollDiff < 0) {
+    scrollDirection = -1; // scrolling up
+  }
+
+  // Check if we're scrolling to portfolio section
+  const portfolioSection = document.getElementById("portfolio");
+  const heroSection = document.getElementById("hero");
+  const portfolioTop = portfolioSection.getBoundingClientRect().top;
+  const heroBottom = heroSection.getBoundingClientRect().bottom;
+
+  // Transition to portfolio section
+  if (portfolioTop < window.innerHeight && scrollDirection === 1) {
+    scrollingToPortfolio = true;
+    scrollingToHero = false;
+  }
+
+  // Transition back to hero section
+  if (heroBottom > 0 && scrollDirection === -1) {
+    scrollingToHero = true;
+    scrollingToPortfolio = false;
+  }
+
+  // Apply different animations based on scroll state
+  spheres.forEach((sphere, index) => {
+    if (scrollingToPortfolio) {
+      // Float up and out when scrolling to portfolio
+      sphere.velocityY = -3 - Math.random() * 2;
+      sphere.mesh.position.y += sphere.velocityY;
+
+      // Random horizontal movement for more natural floating
+      sphere.mesh.position.x += (Math.random() - 0.5) * 2;
+    } else if (scrollingToHero) {
+      // Fall down when scrolling back to hero
+      sphere.velocityY += 0.2; // Gravity
+      sphere.mesh.position.y += sphere.velocityY;
+
+      // Bounce when reaching initial position
+      if (sphere.mesh.position.y < sphere.initialY) {
+        sphere.mesh.position.y = sphere.initialY;
+        sphere.velocityY = -sphere.velocityY * 0.6; // Bounce with damping
+
+        // Stop bouncing when the bounce is very small
+        if (Math.abs(sphere.velocityY) < 0.5) {
+          sphere.velocityY = 0;
+        }
+      }
+    } else {
+      // Normal floating behavior
+      sphere.mesh.position.y -= scrollDiff * 0.05;
+    }
+
+    // Reset position if sphere goes too far out of view
+    if (sphere.mesh.position.y < -300) {
+      sphere.mesh.position.y = 300;
+    } else if (sphere.mesh.position.y > 300) {
+      sphere.mesh.position.y = -300;
+    }
+  });
+
+  lastScrollY = currentScrollY;
+});
 
 // Animate 3D
 function animate3D() {
   requestAnimationFrame(animate3D);
-  group.rotation.y += 0.003;
-  group.rotation.x += 0.001;
+
+  // Rotate the entire hero spheres group
+  heroSpheres.rotation.y += 0.003;
+  heroSpheres.rotation.x += 0.001;
+
+  // Individual sphere rotations
   spheres.forEach(({ mesh, rotationSpeed }) => {
     mesh.rotation.x += rotationSpeed;
     mesh.rotation.y += rotationSpeed;
   });
+
   renderer.render(scene, camera);
 }
 animate3D();
