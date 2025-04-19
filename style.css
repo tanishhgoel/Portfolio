@@ -140,6 +140,11 @@ p {
   animation-delay: 0.8s;
 }
 
+#hero .highlight1 {
+  color: #ffa500;
+  height: 3px;
+}
+
 .tagline {
   font-size: 1.6rem;
   font-weight: 300;
@@ -154,7 +159,7 @@ p {
 
 .scroll-indicator {
   position: absolute;
-  bottom: 50px;
+  bottom: 20px;
   text-align: center;
   animation: fadeIn 1s ease-out;
   animation-delay: 1s;
@@ -171,7 +176,7 @@ p {
 }
 
 .arrow {
-  font-size: 1.5rem;
+  font-size: 2.5rem;
   animation: bounce 2s infinite;
 }
 
@@ -400,6 +405,238 @@ textarea {
   }
 
   .tagline {
+    font-size: 1.1rem;
+  }
+}
+
+/* Carousel Container */
+.carousel-container {
+  position: relative;
+  width: 100%;
+  height: 800px; /* Increased height for larger boxes */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 80px 0;
+  perspective: 1000px; /* Enable 3D perspective */
+}
+
+/* Carousel Track - Contains all bubbles */
+.carousel-track {
+  position: relative;
+  width: 100%;
+  height: 700px; /* Increased height for bubbles area */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform-style: preserve-3d; /* Allow 3D positioning */
+}
+
+/* Individual Bubble */
+.carousel-bubble {
+  position: absolute;
+  width: 80%; /* Take up most of the width */
+  max-width: 800px; /* Increased maximum size */
+  height: 600px; /* Increased fixed height for larger square */
+  border-radius: 30px; /* Square with rounded corners */
+  background-color: rgba(255, 165, 0, 0.15);
+  backdrop-filter: blur(3px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 165, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px;
+  transition: all 0.6s ease;
+  cursor: pointer;
+  transform-origin: center center;
+  transform-style: preserve-3d;
+  will-change: transform, opacity; /* Performance optimization */
+}
+
+.carousel-bubble:hover {
+  background-color: rgba(255, 165, 0, 0.25);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 165, 0, 0.3);
+}
+
+.carousel-bubble.active {
+  background-color: rgba(255, 165, 0, 0.25);
+  cursor: default; /* No pointer on active item */
+}
+
+/* Content inside bubble */
+.bubble-content {
+  width: 100%;
+  max-width: 700px; /* Increased content width */
+  pointer-events: none; /* Make content non-interactive except for links */
+}
+
+.bubble-content a {
+  pointer-events: auto; /* Make links clickable */
+}
+
+.bubble-content h3 {
+  color: white;
+  font-size: 2.6rem; /* Larger text */
+  margin-bottom: 30px;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.bubble-description {
+  color: white;
+  font-size: 1.3rem; /* Larger text */
+  margin-bottom: 40px;
+  line-height: 1.7;
+}
+
+/* Navigation container at bottom */
+.carousel-nav-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px; /* Taller navigation area */
+  width: 100%;
+  margin-top: 20px;
+}
+
+/* Navigation buttons */
+.carousel-nav {
+  width: 50px; /* Larger buttons */
+  height: 50px;
+  border-radius: 50%;
+  background-color: rgba(255, 165, 0, 0.3);
+  border: none;
+  color: white;
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 0 20px;
+}
+
+.carousel-nav:hover {
+  background-color: rgba(255, 165, 0, 0.6);
+}
+
+/* Carousel indicators/dots */
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.carousel-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carousel-dot:hover {
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+.carousel-dot.active {
+  background-color: #ffa500;
+  transform: scale(1.3);
+}
+
+/* Make sure the project link style is preserved but larger */
+.project-link {
+  display: inline-block;
+  padding: 14px 28px; /* Larger padding */
+  background-color: #ffa500;
+  color: black;
+  text-decoration: none;
+  border-radius: 6px;
+  margin-top: 30px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  font-size: 1.3rem; /* Larger text */
+  pointer-events: auto; /* Ensure clickable */
+}
+
+.project-link:hover {
+  background-color: white;
+  color: #ffa500;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .carousel-container {
+    height: 700px;
+  }
+
+  .carousel-track {
+    height: 600px;
+  }
+
+  .carousel-bubble {
+    height: 550px;
+    max-width: 700px;
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel-container {
+    height: 600px;
+  }
+
+  .carousel-track {
+    height: 500px;
+  }
+
+  .carousel-bubble {
+    height: 450px;
+    max-width: 550px;
+    padding: 30px;
+  }
+
+  .bubble-content h3 {
+    font-size: 2rem;
+  }
+
+  .bubble-description {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel-container {
+    height: 550px;
+  }
+
+  .carousel-track {
+    height: 450px;
+  }
+
+  .carousel-bubble {
+    width: 95%;
+    height: 400px;
+    padding: 25px;
+  }
+
+  .bubble-content h3 {
+    font-size: 1.7rem;
+    margin-bottom: 20px;
+  }
+
+  .carousel-nav {
+    width: 40px;
+    height: 40px;
+    margin: 0 15px;
+  }
+
+  .project-link {
+    padding: 10px 20px;
     font-size: 1.1rem;
   }
 }
