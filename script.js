@@ -47,16 +47,11 @@ class Bubble {
 // Blob setup
 const numPoints = 32;
 const radius = 375;
-// changed from 0.05 to 0.04
-// weaker pullback = wobblier blob
 const tension = 0.04;
-// changed from 0.2 to 0.5
-// stronger push from movement = more responsive blob
 const drag = 0.3;
 
 let points = [];
 
-// Initialize soft-body points
 for (let i = 0; i < numPoints; i++) {
   const angle = (i / numPoints) * 2 * Math.PI;
   points.push({
@@ -68,7 +63,6 @@ for (let i = 0; i < numPoints; i++) {
   });
 }
 
-// Helper for smoothing
 function lerp(a, b, t) {
   return a + (b - a) * t;
 }
@@ -91,8 +85,6 @@ function updateBlob() {
 
     const normal = { x: -Math.sin(p.angle), y: Math.cos(p.angle) };
     const influence = normal.x * normVel.x + normal.y * normVel.y;
-    //changed from 0.4 to 0.55
-    // to make the blob more responsive to mouse movement
     const offset = influence * mag * 0.7;
 
     p.vx += (targetX - p.x) * tension;
@@ -101,8 +93,6 @@ function updateBlob() {
     p.vx += normVel.x * offset * drag;
     p.vy += normVel.y * offset * drag;
 
-    // changed from 0.9 to 0.92
-    // less damping, longer wobble
     p.vx *= 0.92;
     p.vy *= 0.92;
 
@@ -134,18 +124,54 @@ function drawBlob() {
   ctx.globalCompositeOperation = "source-over";
 }
 
+// Three.js setup
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000
+);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// Green cube
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
+camera.position.z = 5;
+
+// Animation loop
+function animate() {
+  requestAnimationFrame(animate);
+
+  // Rotate the cube for effect
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
+
+  // Render the 3D scene
+  renderer.render(scene, camera);
+}
+
+// Start the Three.js animation
+animate();
+
+// Main draw loop
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Orange fill
+  // Orange fill for 2D content
   ctx.fillStyle = "orange";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Update and draw blob
+  // Update and draw 2D blob
   updateBlob();
   drawBlob();
 
-  // Draw bubbles
+  // Draw 2D bubbles
   bubbles.push(new Bubble(mouse.x, mouse.y));
   bubbles = bubbles.filter((b) => b.alpha > 0);
   bubbles.forEach((b) => {
@@ -155,4 +181,5 @@ function draw() {
 
   requestAnimationFrame(draw);
 }
+
 draw();
