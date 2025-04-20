@@ -32,8 +32,7 @@ function setupPortfolioCarousel() {
   carouselTrack.className = "carousel-track";
   projectsContainer.appendChild(carouselTrack);
 
-  // Project data - replace with your actual projects
-  // Project data - replace with your actual projects
+  // Project data - UPDATED with your actual projects from the PDF
   const projects = [
     {
       title: "Angry Birds Game",
@@ -60,17 +59,18 @@ function setupPortfolioCarousel() {
       title: "TEDx Poster",
       description:
         "Followed the classic Red and Black Tedx theme to create a poster for TEDxIIITD using Figma tools and Adobe Illustrator.",
-      link: "www.google.com", // Note: You might want to update this to a real link
+      link: "https://www.google.com", // Replace with actual Behance link
       color: "rgba(255, 165, 0, 0.35)",
     },
     {
       title: "TEDx Ticket",
       description:
         "Followed the classic Red and Black Tedx theme to create a ticket for TEDxIIITD using Figma tools and Adobe Illustrator.",
-      link: "www.google.com", // Note: You might want to update this to a real link
+      link: "https://www.google.com", // Replace with actual Behance link
       color: "rgba(255, 165, 0, 0.4)",
     },
   ];
+
   // Create bubble for each project
   projects.forEach((project, index) => {
     const bubble = document.createElement("div");

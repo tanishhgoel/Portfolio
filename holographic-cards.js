@@ -13,39 +13,52 @@ function setupHolographicCards() {
   projectsContainer.innerHTML = "";
   projectsContainer.classList.add("holographic-container");
 
-  // Project data - replace with your actual projects
+  // Project data - updated with your actual projects from the text portfolio PDF
   const projects = [
     {
-      title: "Project 1",
+      title: "Angry Birds Game",
       description:
-        "Description of your amazing project goes here. This is the detailed view that appears when the hologram is activated.",
-      image: "/api/placeholder/800/600", // Placeholder image
-      link: "#project1",
+        "Built the game using LibGDX to implement the GUI. Used Object-Oriented Programming concepts to implement a scalable model and represented those in a UML Diagram.",
+      image: "image1.jpg", // Your actual image
+      link: "https://github.com/Adamya10000/angry_birds",
       color: "#ff9500", // Orange accent color
+      technologies: ["UML", "Use Case", "LIBGDX"],
     },
     {
-      title: "Project 2",
+      title: "RISCV Assembler & Simulator",
       description:
-        "Interactive web application with 3D elements and animations. Built with Three.js and modern JavaScript.",
-      image: "/api/placeholder/800/600", // Placeholder image
-      link: "#project2",
+        "Built a RISC-V Assembler and Simulator in Python, implementing load/store operations, binary operations, and ISA handling to simulate instruction execution.",
+      image: "image2.jpg", // Your actual image
+      link: "https://github.com/tanishhgoel/RISCV",
       color: "#ff9500",
+      technologies: ["Python", "ISA", "CO"],
     },
     {
-      title: "Project 3",
+      title: "ByteMe Canteen System",
       description:
-        "E-commerce platform with custom animations and smooth user experience. Responsive design for all devices.",
-      image: "/api/placeholder/800/600", // Placeholder image
-      link: "#project3",
+        "Developed a canteen management system with CLI (Java) and GUI (JavaFX) integration, enabling data transfer through file handling and efficient management using multithreading.",
+      image: "image3.jpg", // Your actual image
+      link: "https://github.com/tanishhgoel/ByteMe-CLI-GUI/tree/master",
       color: "#ff9500",
+      technologies: ["JavaFX", "Java", "CLI", "GUI"],
     },
     {
-      title: "Project 4",
+      title: "TEDx Poster",
       description:
-        "Data visualization dashboard that presents complex information in an intuitive interface with interactive charts.",
-      image: "/api/placeholder/800/600", // Placeholder image
-      link: "#project4",
+        "Followed the classic Red and Black Tedx theme to create a poster for TEDxIIITD using Figma tools and Adobe Illustrator.",
+      image: "image4.jpg", // Your actual image
+      link: "https://www.google.com", // Replace with actual Behance link
       color: "#ff9500",
+      technologies: ["Figma", "Illustrator"],
+    },
+    {
+      title: "TEDx Ticket",
+      description:
+        "Followed the classic Red and Black Tedx theme to create a ticket for TEDxIIITD using Figma tools and Adobe Illustrator.",
+      image: "image5.jpg", // Your actual image
+      link: "https://www.google.com", // Replace with actual Behance link
+      color: "#ff9500",
+      technologies: ["Figma", "Illustrator"],
     },
   ];
 
@@ -70,22 +83,29 @@ function setupHolographicCards() {
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
               </svg>
             </div>
+            <div class="tech-list-container">
+              <h4>Technologies:</h4>
+              <ul class="tech-list">
+                ${project.technologies
+                  .map((tech) => <li class="tech-item">${tech}</li>)
+                  .join("")}
+              </ul>
+            </div>
             <div class="holo-scanline"></div>
           </div>
         </div>
       `;
 
-    // Create back side of card (flipped state)
+    // Create back side of card (flipped state) with prominent image
     const cardBack = document.createElement("div");
     cardBack.className = "holographic-back";
 
-    // Add content to back side
+    // Add content to back side with larger image as the main focus
     cardBack.innerHTML = `
         <div class="holo-frame">
           <div class="holo-content">
             <img src="${project.image}" alt="${project.title}" class="holo-project-image">
-            <p>${project.description}</p>
-            <a href="${project.link}" class="holo-button">View Project</a>
+            <a href="${project.link}" class="holo-button" target="_blank">View Project</a>
             <div class="holo-scanline"></div>
           </div>
         </div>
@@ -112,7 +132,7 @@ function setupHolographicCards() {
     setupHolographicEffects(card);
   });
 
-  // Add CSS styles for holographic effects
+  // Add CSS styles for holographic effects with increased size
   addHolographicStyles();
 }
 
@@ -150,14 +170,14 @@ function setupHolographicEffects(card) {
       (-maxRotationX * (mouseY - updatedCenterY)) / (updatedRect.height / 2);
 
     // Apply rotation transformation
-    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    card.style.transform = perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg);
 
     // Update light position to follow cursor
     const light = card.querySelector(".holo-light");
     if (light) {
       const lightX = ((mouseX - updatedRect.left) / updatedRect.width) * 100;
       const lightY = ((mouseY - updatedRect.top) / updatedRect.height) * 100;
-      light.style.background = `radial-gradient(circle at ${lightX}% ${lightY}%, rgba(255, 165, 0, 0.8) 0%, rgba(255, 165, 0, 0.3) 20%, rgba(255, 165, 0, 0) 50%)`;
+      light.style.background = radial-gradient(circle at ${lightX}% ${lightY}%, rgba(255, 165, 0, 0.8) 0%, rgba(255, 165, 0, 0.3) 20%, rgba(255, 165, 0, 0) 50%);
     }
   }
 
@@ -204,14 +224,14 @@ function setupHolographicEffects(card) {
     const rotateY = Math.max(Math.min(gamma, maxRotationY), -maxRotationY);
 
     // Apply rotation transformation
-    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    card.style.transform = perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg);
 
     // Move light based on device orientation
     const light = card.querySelector(".holo-light");
     if (light) {
       const lightX = ((gamma + 90) / 180) * 100;
       const lightY = ((beta + 90) / 180) * 100;
-      light.style.background = `radial-gradient(circle at ${lightX}% ${lightY}%, rgba(255, 165, 0, 0.8) 0%, rgba(255, 165, 0, 0.3) 20%, rgba(255, 165, 0, 0) 50%)`;
+      light.style.background = radial-gradient(circle at ${lightX}% ${lightY}%, rgba(255, 165, 0, 0.8) 0%, rgba(255, 165, 0, 0.3) 20%, rgba(255, 165, 0, 0) 50%);
     }
   }
 
@@ -311,8 +331,8 @@ function addHolographicStyles() {
     styleSheet.innerHTML = `
         .holographic-container {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          gap: 30px;
+          grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+          gap: 40px;
           margin-top: 50px;
           perspective: 1000px;
         }
@@ -320,7 +340,7 @@ function addHolographicStyles() {
         .holographic-card {
           position: relative;
           width: 100%;
-          height: 350px;
+          height: 500px; /* Increased height for better image display */
           transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
           transform-style: preserve-3d;
           transform: perspective(1000px);
@@ -363,7 +383,7 @@ function addHolographicStyles() {
         .holo-content {
           display: flex;
           flex-direction: column;
-          justify-content: center;
+          justify-content: space-between;
           align-items: center;
           height: 100%;
           padding: 25px;
@@ -394,17 +414,48 @@ function addHolographicStyles() {
         
         .holo-project-image {
           width: 100%;
-          height: 120px;
+          height: 70%; /* Increased height for image */
           object-fit: cover;
           border-radius: 8px;
           margin-bottom: 15px;
           box-shadow: 0 0 20px rgba(255, 165, 0, 0.3);
         }
         
+        .tech-list-container {
+          width: 100%;
+          margin: 20px 0;
+          text-align: center;
+        }
+        
+        .tech-list-container h4 {
+          color: #ff9500;
+          margin-bottom: 8px;
+          font-size: 1.1rem;
+        }
+        
+        .tech-list {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 10px;
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+        
+        .tech-item {
+          background: rgba(255, 165, 0, 0.2);
+          border: 1px solid rgba(255, 165, 0, 0.5);
+          border-radius: 15px;
+          padding: 5px 12px;
+          font-size: 0.9rem;
+          display: inline-block;
+        }
+        
         .holo-button {
           display: inline-block;
-          padding: 10px 20px;
-          margin-top: 15px;
+          padding: 12px 25px;
+          margin-top: 10px;
           background-color: #ff9500;
           color: #000;
           text-decoration: none;
@@ -414,7 +465,7 @@ function addHolographicStyles() {
           position: relative;
           overflow: hidden;
           z-index: 10;
-          box-shadow: 0 0 10px rgba(255, 165, 0, 0.5);
+          box-shadow: 0 0 15px rgba(255, 165, 0, 0.5);
         }
         
         .holo-button:hover {
@@ -458,6 +509,8 @@ function addHolographicStyles() {
         
         .holo-scanline {
           position: absolute;
+          bottom: 15px;
+          left: 0;
           width: 100%;
           height: 4px;
           background: linear-gradient(to right, rgba(255, 165, 0, 0), rgba(255, 165, 0, 0.5), rgba(255, 165, 0, 0));
@@ -481,26 +534,30 @@ function addHolographicStyles() {
         
         @keyframes scanline {
           0% {
-            top: 0%;
+            bottom: 0%;
           }
           100% {
-            top: 100%;
+            bottom: 100%;
           }
         }
         
         /* Responsive adjustments */
         @media (max-width: 768px) {
           .holographic-container {
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
           }
           
           .holographic-card {
-            height: 300px;
+            height: 450px;
           }
           
           .holo-content h3 {
             font-size: 1.5rem;
+          }
+          
+          .holo-project-image {
+            height: 65%;
           }
         }
         
@@ -510,7 +567,11 @@ function addHolographicStyles() {
           }
           
           .holographic-card {
-            height: 280px;
+            height: 420px;
+          }
+          
+          .holo-project-image {
+            height: 60%;
           }
         }
       `;
