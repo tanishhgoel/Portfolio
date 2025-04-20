@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tanish's Portfolio</title>
     <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"
+    />
   </head>
   <body>
     <!-- Background elements -->
@@ -91,13 +95,24 @@
           </div>
         </div>
       </section>
-
       <!-- Contact section -->
       <section id="contact" class="section">
         <div class="content">
           <h2>Get in <span class="highlight">Touch</span></h2>
           <div class="contact-container">
-            <form id="contact-form">
+            <form
+              id="contact-form"
+              action="https://formsubmit.co/tanish23546@iiitd.ac.in"
+              method="POST"
+            >
+              <input
+                type="hidden"
+                name="_subject"
+                value="Portfolio Contact Form"
+              />
+              <input type="hidden" name="_template" value="table" />
+              <input type="hidden" name="_captcha" value="false" />
+
               <div class="form-group">
                 <input
                   type="text"
@@ -128,30 +143,63 @@
             </form>
 
             <div class="contact-info">
-              <div class="contact-item">
-                <span class="highlight">Email:</span> your.email@example.com
+              <div id="map-container">
+                <div id="map"></div>
               </div>
-              <div class="contact-item">
-                <span class="highlight">LinkedIn:</span>
-                linkedin.com/in/yourusername
+
+              <div class="location-container">
+                <h3>Find <span class="highlight">Me Here</span></h3>
+                <div class="coordinates">28.5494° N, 77.2714° E</div>
               </div>
-              <div class="contact-item">
-                <span class="highlight">GitHub:</span> github.com/yourusername
-              </div>
+
+              <!-- Map container - increased size -->
             </div>
           </div>
         </div>
       </section>
+
+      <!-- New Footer -->
+      <footer class="page-footer">
+        <div class="footer-content">
+          <div class="footer-info">
+            <h3><span class="highlight">Contact</span> Info</h3>
+            <div class="contact-item">
+              <span class="highlight">Address:</span> Okhla Phase 3, New Delhi,
+              India
+            </div>
+            <div class="contact-item">
+              <span class="highlight">Name:</span> Tanish
+            </div>
+            <div class="contact-item">
+              <span class="highlight">Email:</span> tanish23546@iiitd.ac.in
+            </div>
+            <div class="contact-item">
+              <span class="highlight">Campus:</span> IIIT Delhi
+            </div>
+          </div>
+          <div class="footer-links">
+            <h3><span class="highlight">Quick</span> Links</h3>
+            <div><a href="#hero">Home</a></div>
+            <div><a href="#portfolio">Portfolio</a></div>
+            <div><a href="#contact">Contact</a></div>
+          </div>
+          <div class="footer-bottom">
+            <p>&copy; 2025 Tanish. All Rights Reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.156.1/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 
     <script src="script.js"></script>
     <script src="scroll.js"></script>
     <script src="portfolio-carousel.js"></script>
     <script src="project-detail-navigation"></script>
+    <script src="map.js"></script>
   </body>
 </html>

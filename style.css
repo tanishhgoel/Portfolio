@@ -320,10 +320,10 @@ p {
 /* Contact Section */
 .contact-container {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row; /* Force side by side on desktop */
   gap: 40px;
-  justify-content: center;
-  align-items: flex-start;
+  justify-content: space-between;
+  align-items: stretch; /* Make both columns the same height */
   margin-top: 30px;
 }
 
@@ -333,6 +333,84 @@ p {
   max-width: 500px;
 }
 
+.contact-info {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Improved Map Styles */
+#map-container {
+  width: 100%;
+  height: 350px;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: all 0.5s ease;
+  box-shadow: 0 0 15px rgba(255, 165, 0, 0.2);
+  margin-bottom: 10px; /* Add space between map and content below */
+}
+
+/* New Footer Styles */
+.page-footer {
+  background-color: rgba(0, 0, 0, 0.8);
+  border-top: 2px solid rgba(255, 165, 0, 0.3);
+  padding: 30px 0;
+  margin-top: 60px;
+  text-align: center;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.footer-info {
+  flex: 1;
+  min-width: 250px;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.footer-links {
+  flex: 1;
+  min-width: 250px;
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+.footer-bottom {
+  width: 100%;
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 165, 0, 0.2);
+  margin-top: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .contact-container {
+    flex-direction: column;
+  }
+
+  .footer-content {
+    flex-direction: column;
+  }
+
+  .footer-info,
+  .footer-links {
+    text-align: center;
+    width: 100%;
+  }
+}
 .form-group {
   margin-bottom: 20px;
 }
@@ -374,13 +452,81 @@ textarea {
 .contact-info {
   flex: 1;
   min-width: 250px;
-  max-width: 400px;
-  text-align: left;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .contact-item {
   margin-bottom: 15px;
   font-size: 1.1rem;
+}
+
+.location-container {
+  text-align: left;
+  background-color: rgba(255, 165, 0, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255, 165, 0, 0.1);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+}
+
+.location-container h3 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+.coordinates {
+  display: inline-block;
+  font-family: monospace;
+  padding: 6px 10px;
+  background-color: rgba(255, 165, 0, 0.1);
+  border: 1px solid rgba(255, 165, 0, 0.3);
+  border-radius: 4px;
+  margin-top: 15px;
+  color: #ffa500;
+  font-size: 0.9rem;
+}
+
+/* Map container styles */
+#map-container {
+  width: 100%;
+  height: 300px;
+  margin-top: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: all 0.5s ease;
+  box-shadow: 0 0 15px rgba(255, 165, 0, 0.2);
+  transform: perspective(1000px) rotateX(5deg) rotateY(-5deg);
+}
+
+#map-container:hover {
+  transform: perspective(1000px) rotateX(0) rotateY(0) scale(1.05);
+  box-shadow: 0 0 20px rgba(255, 165, 0, 0.4);
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .contact-info {
+    width: 100%;
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .location-container {
+    text-align: center;
+  }
+
+  #map-container {
+    height: 250px;
+  }
 }
 
 /* Responsive Adjustments */
@@ -403,16 +549,6 @@ textarea {
 
   .projects-container {
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  }
-
-  .contact-container {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .contact-info {
-    text-align: center;
-    margin-top: 30px;
   }
 }
 
