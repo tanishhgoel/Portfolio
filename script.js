@@ -30,7 +30,7 @@ window.addEventListener("mousemove", (e) => {
 // Blob Setup
 // ===================
 const numPoints = 32;
-const radius = 500;
+const radius = 800;
 const tension = 0.04;
 const drag = 0.3;
 

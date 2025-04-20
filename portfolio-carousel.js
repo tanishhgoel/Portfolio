@@ -4,6 +4,21 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function setupPortfolioCarousel() {
+  // Only initialize reactions once
+  if (!localStorage.getItem("reactions")) {
+    const dummyData = {
+      "project-0": { "👍": 4, "❤️": 2 },
+      "project-1": { "🔥": 3, "👏": 1 },
+      "project-2": { "🚀": 5, "😎": 2 },
+      "project-3": { "🤯": 1, "❤️": 1 },
+      "project-4": { "👍": 3, "😎": 1 },
+    };
+    localStorage.setItem("reactions", JSON.stringify(dummyData));
+  }
+
+  // Preload the audio file
+  const emojiSound = new Audio("emoji.wav");
+
   // Get the projects container
   const projectsContainer = document.querySelector(".projects-container");
   if (!projectsContainer) return;
@@ -92,7 +107,124 @@ function setupPortfolioCarousel() {
       // The actual navigation will be handled by the project-detail-navigation.js script
     });
 
+    // Create reaction box (hidden by default)
+    const reactionBox = document.createElement("div");
+    reactionBox.className = "reaction-box";
+    reactionBox.style.display = "none"; // Hide by default
+
+    const emojis = ["👍", "❤️", "🔥", "😎", "🚀", "👏", "🤯"];
+    const projectId = `project-${index}`;
+
+    // Load reactions from localStorage
+    const reactionData = JSON.parse(localStorage.getItem("reactions") || "{}");
+    const projectReactions = reactionData[projectId] || {};
+
+    // Track user's current reaction for this project
+    const userCurrentReaction = localStorage.getItem(`voted-${projectId}`);
+
+    // Create emoji buttons and count display
+    emojis.forEach((emoji) => {
+      const emojiBtn = document.createElement("span");
+      emojiBtn.className = "emoji";
+      // Add selected class if this is the user's current reaction
+      if (userCurrentReaction === emoji) {
+        emojiBtn.classList.add("selected");
+      }
+      emojiBtn.textContent = emoji;
+
+      const count = projectReactions[emoji] || 0;
+      const countSpan = document.createElement("span");
+      countSpan.className = "emoji-count";
+      countSpan.innerText = count;
+
+      const wrapper = document.createElement("div");
+      wrapper.className = "emoji-wrapper";
+      wrapper.appendChild(emojiBtn);
+      wrapper.appendChild(countSpan);
+
+      // Allow clicking on all emojis, but handle differently if already voted
+      emojiBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+
+        // Play emoji sound
+        const soundClone = emojiSound.cloneNode();
+        soundClone.play();
+
+        // Get latest reaction data to prevent overwriting others' changes
+        const currentReactionData = JSON.parse(
+          localStorage.getItem("reactions") || "{}"
+        );
+        currentReactionData[projectId] = currentReactionData[projectId] || {};
+
+        const previousReaction = localStorage.getItem(`voted-${projectId}`);
+
+        // If user already reacted with this emoji, remove the reaction
+        if (previousReaction === emoji) {
+          // Decrement count for this emoji
+          if (currentReactionData[projectId][emoji] > 0) {
+            currentReactionData[projectId][emoji] -= 1;
+          }
+          // Remove user's vote record
+          localStorage.removeItem(`voted-${projectId}`);
+          emojiBtn.classList.remove("selected");
+        }
+        // If user already reacted with a different emoji, change the reaction
+        else if (previousReaction) {
+          // Decrement count for previous emoji
+          if (
+            currentReactionData[projectId][previousReaction] &&
+            currentReactionData[projectId][previousReaction] > 0
+          ) {
+            currentReactionData[projectId][previousReaction] -= 1;
+          }
+
+          // Increment count for new emoji
+          currentReactionData[projectId][emoji] =
+            (currentReactionData[projectId][emoji] || 0) + 1;
+
+          // Update user's vote record
+          localStorage.setItem(`voted-${projectId}`, emoji);
+
+          // Update UI to show selected state
+          document
+            .querySelectorAll(`.carousel-bubble[data-index="${index}"] .emoji`)
+            .forEach((el) => {
+              el.classList.remove("selected");
+            });
+          emojiBtn.classList.add("selected");
+        }
+        // If first time reacting to this project
+        else {
+          // Increment count for this emoji
+          currentReactionData[projectId][emoji] =
+            (currentReactionData[projectId][emoji] || 0) + 1;
+
+          // Record user's vote
+          localStorage.setItem(`voted-${projectId}`, emoji);
+          emojiBtn.classList.add("selected");
+        }
+
+        // Save updated reaction data
+        localStorage.setItem("reactions", JSON.stringify(currentReactionData));
+
+        // Update the count display
+        updateReactionCounts(index);
+      });
+
+      reactionBox.appendChild(wrapper);
+    });
+
+    bubble.appendChild(reactionBox);
     carouselTrack.appendChild(bubble);
+
+    // Add hover event to show/hide reaction box
+    bubble.addEventListener("mouseenter", () => {
+      reactionBox.style.display = "flex";
+    });
+
+    bubble.addEventListener("mouseleave", () => {
+      reactionBox.style.display = "none";
+    });
   });
 
   // Add bottom navigation container
@@ -186,6 +318,46 @@ function setupPortfolioCarousel() {
         navigateCarousel("prev");
       }
     }
+  });
+
+  // Add CSS for the selected emoji state
+  const style = document.createElement("style");
+  style.textContent = `
+    .emoji.selected {
+      background-color: rgba(255, 165, 0, 0.2);
+      border-radius: 50%;
+      padding: 2px;
+    }
+    
+    .reaction-box {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 12px;
+      transition: opacity 0.3s ease;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+// Helper function to update reaction counts in the UI
+function updateReactionCounts(projectIndex) {
+  const projectId = `project-${projectIndex}`;
+  const reactionData = JSON.parse(localStorage.getItem("reactions") || "{}");
+  const projectReactions = reactionData[projectId] || {};
+
+  // Update all emoji count displays for this project
+  const countElements = document.querySelectorAll(
+    `.carousel-bubble[data-index="${projectIndex}"] .emoji-count`
+  );
+  const emojiElements = document.querySelectorAll(
+    `.carousel-bubble[data-index="${projectIndex}"] .emoji`
+  );
+
+  emojiElements.forEach((emojiEl, i) => {
+    const emoji = emojiEl.textContent;
+    const count = projectReactions[emoji] || 0;
+    countElements[i].innerText = count;
   });
 }
 
