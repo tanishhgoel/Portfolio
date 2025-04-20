@@ -19,7 +19,7 @@ function setupHolographicCards() {
       title: "Angry Birds Game",
       description:
         "Built the game using LibGDX to implement the GUI. Used Object-Oriented Programming concepts to implement a scalable model and represented those in a UML Diagram.",
-      image: "image1.jpg", // Your actual image
+      image: "image1.png", // Your actual image
       link: "https://github.com/Adamya10000/angry_birds",
       color: "#ff9500", // Orange accent color
       technologies: ["UML", "Use Case", "LIBGDX"],
@@ -37,7 +37,7 @@ function setupHolographicCards() {
       title: "ByteMe Canteen System",
       description:
         "Developed a canteen management system with CLI (Java) and GUI (JavaFX) integration, enabling data transfer through file handling and efficient management using multithreading.",
-      image: "image3.jpg", // Your actual image
+      image: "image3.png", // Your actual image
       link: "https://github.com/tanishhgoel/ByteMe-CLI-GUI/tree/master",
       color: "#ff9500",
       technologies: ["JavaFX", "Java", "CLI", "GUI"],
@@ -46,8 +46,8 @@ function setupHolographicCards() {
       title: "TEDx Poster",
       description:
         "Followed the classic Red and Black Tedx theme to create a poster for TEDxIIITD using Figma tools and Adobe Illustrator.",
-      image: "image4.jpg", // Your actual image
-      link: "https://www.google.com", // Replace with actual Behance link
+      image: "image4.png", // Your actual image
+      link: "https://pin.it/5kf5g06Ct",
       color: "#ff9500",
       technologies: ["Figma", "Illustrator"],
     },
@@ -55,8 +55,8 @@ function setupHolographicCards() {
       title: "TEDx Ticket",
       description:
         "Followed the classic Red and Black Tedx theme to create a ticket for TEDxIIITD using Figma tools and Adobe Illustrator.",
-      image: "image5.jpg", // Your actual image
-      link: "https://www.google.com", // Replace with actual Behance link
+      image: "image5.png", // Your actual image
+      link: "https://pin.it/6ssr1mAor",
       color: "#ff9500",
       technologies: ["Figma", "Illustrator"],
     },
@@ -69,47 +69,44 @@ function setupHolographicCards() {
     card.className = "holographic-card";
     card.dataset.index = index;
 
-    // Create inner card content (front side)
+    // Create inner card content (front side) - now with project info
     const cardFront = document.createElement("div");
     cardFront.className = "holographic-front";
 
     // Add content to front side
     cardFront.innerHTML = `
-        <div class="holo-frame">
-          <div class="holo-content">
-            <h3>${project.title}</h3>
-            <div class="holo-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-              </svg>
-            </div>
-            <div class="tech-list-container">
-              <h4>Technologies:</h4>
-              <ul class="tech-list">
-                ${project.technologies
-                  .map((tech) => <li class="tech-item">${tech}</li>)
-                  .join("")}
-              </ul>
-            </div>
-            <div class="holo-scanline"></div>
+      <div class="holo-frame">
+        <div class="holo-content">
+          <h3>${project.title}</h3>
+          <p class="project-description">${project.description}</p>
+          <div class="tech-list-container">
+            <h4>Technologies:</h4>
+            <ul class="tech-list">
+              ${project.technologies
+                .map((tech) => `<li class="tech-item">${tech}</li>`)
+                .join("")}
+            </ul>
           </div>
+          <a href="${
+            project.link
+          }" class="holo-button" target="_blank">View Project</a>
+          <div class="holo-scanline"></div>
         </div>
-      `;
+      </div>
+    `;
 
-    // Create back side of card (flipped state) with prominent image
+    // Create back side of card (flipped state) with only the image
     const cardBack = document.createElement("div");
     cardBack.className = "holographic-back";
 
     // Add content to back side with larger image as the main focus
     cardBack.innerHTML = `
-        <div class="holo-frame">
-          <div class="holo-content">
-            <img src="${project.image}" alt="${project.title}" class="holo-project-image">
-            <a href="${project.link}" class="holo-button" target="_blank">View Project</a>
-            <div class="holo-scanline"></div>
-          </div>
+      <div class="holo-frame">
+        <div class="holo-content full-image">
+          <img src="${project.image}" alt="${project.title}" class="holo-project-image">
         </div>
-      `;
+      </div>
+    `;
 
     // Create holographic overlay effect
     const holoOverlay = document.createElement("div");
@@ -131,9 +128,6 @@ function setupHolographicCards() {
     // Set up event listeners for this card
     setupHolographicEffects(card);
   });
-
-  // Add CSS styles for holographic effects with increased size
-  addHolographicStyles();
 }
 
 function setupHolographicEffects(card) {
@@ -170,14 +164,14 @@ function setupHolographicEffects(card) {
       (-maxRotationX * (mouseY - updatedCenterY)) / (updatedRect.height / 2);
 
     // Apply rotation transformation
-    card.style.transform = perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg);
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
 
     // Update light position to follow cursor
     const light = card.querySelector(".holo-light");
     if (light) {
       const lightX = ((mouseX - updatedRect.left) / updatedRect.width) * 100;
       const lightY = ((mouseY - updatedRect.top) / updatedRect.height) * 100;
-      light.style.background = radial-gradient(circle at ${lightX}% ${lightY}%, rgba(255, 165, 0, 0.8) 0%, rgba(255, 165, 0, 0.3) 20%, rgba(255, 165, 0, 0) 50%);
+      light.style.background = `radial-gradient(circle at ${lightX}% ${lightY}%, rgba(255, 165, 0, 0.8) 0%, rgba(255, 165, 0, 0.3) 20%, rgba(255, 165, 0, 0) 50%)`;
     }
   }
 
@@ -224,14 +218,14 @@ function setupHolographicEffects(card) {
     const rotateY = Math.max(Math.min(gamma, maxRotationY), -maxRotationY);
 
     // Apply rotation transformation
-    card.style.transform = perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg);
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
 
     // Move light based on device orientation
     const light = card.querySelector(".holo-light");
     if (light) {
       const lightX = ((gamma + 90) / 180) * 100;
       const lightY = ((beta + 90) / 180) * 100;
-      light.style.background = radial-gradient(circle at ${lightX}% ${lightY}%, rgba(255, 165, 0, 0.8) 0%, rgba(255, 165, 0, 0.3) 20%, rgba(255, 165, 0, 0) 50%);
+      light.style.background = `radial-gradient(circle at ${lightX}% ${lightY}%, rgba(255, 165, 0, 0.8) 0%, rgba(255, 165, 0, 0.3) 20%, rgba(255, 165, 0, 0) 50%)`;
     }
   }
 
@@ -320,262 +314,5 @@ function setupHolographicEffects(card) {
   // Add device orientation handler for mobile devices
   if (window.DeviceOrientationEvent) {
     window.addEventListener("deviceorientation", handleDeviceOrientation);
-  }
-}
-
-function addHolographicStyles() {
-  // Add CSS if it doesn't already exist
-  if (!document.getElementById("holographic-styles")) {
-    const styleSheet = document.createElement("style");
-    styleSheet.id = "holographic-styles";
-    styleSheet.innerHTML = `
-        .holographic-container {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-          gap: 40px;
-          margin-top: 50px;
-          perspective: 1000px;
-        }
-        
-        .holographic-card {
-          position: relative;
-          width: 100%;
-          height: 500px; /* Increased height for better image display */
-          transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-          transform-style: preserve-3d;
-          transform: perspective(1000px);
-          cursor: pointer;
-        }
-        
-        .holographic-front,
-        .holographic-back {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          backface-visibility: hidden;
-          border-radius: 15px;
-          overflow: hidden;
-          transform-style: preserve-3d;
-        }
-        
-        .holographic-back {
-          transform: rotateY(180deg);
-        }
-        
-        .holographic-card.flipped {
-          transform: perspective(1000px) rotateY(180deg) scale(1.1);
-        }
-        
-        .holo-frame {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          border: 2px solid rgba(255, 165, 0, 0.5);
-          border-radius: 15px;
-          box-shadow: 0 0 20px rgba(255, 165, 0, 0.3), inset 0 0 20px rgba(255, 165, 0, 0.2);
-          overflow: hidden;
-          background: rgba(0, 0, 0, 0.5);
-          backdrop-filter: blur(5px);
-        }
-        
-        .holo-content {
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          align-items: center;
-          height: 100%;
-          padding: 25px;
-          text-align: center;
-          color: white;
-        }
-        
-        .holo-content h3 {
-          font-size: 1.8rem;
-          margin-bottom: 1rem;
-          color: #ff9500;
-          text-shadow: 0 0 10px rgba(255, 165, 0, 0.5);
-        }
-        
-        .holo-icon {
-          width: 80px;
-          height: 80px;
-          margin: 20px 0;
-        }
-        
-        .holo-icon svg {
-          width: 100%;
-          height: 100%;
-          stroke: #ff9500;
-          stroke-width: 2;
-          filter: drop-shadow(0 0 5px rgba(255, 165, 0, 0.5));
-        }
-        
-        .holo-project-image {
-          width: 100%;
-          height: 70%; /* Increased height for image */
-          object-fit: cover;
-          border-radius: 8px;
-          margin-bottom: 15px;
-          box-shadow: 0 0 20px rgba(255, 165, 0, 0.3);
-        }
-        
-        .tech-list-container {
-          width: 100%;
-          margin: 20px 0;
-          text-align: center;
-        }
-        
-        .tech-list-container h4 {
-          color: #ff9500;
-          margin-bottom: 8px;
-          font-size: 1.1rem;
-        }
-        
-        .tech-list {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          gap: 10px;
-          list-style: none;
-          padding: 0;
-          margin: 0;
-        }
-        
-        .tech-item {
-          background: rgba(255, 165, 0, 0.2);
-          border: 1px solid rgba(255, 165, 0, 0.5);
-          border-radius: 15px;
-          padding: 5px 12px;
-          font-size: 0.9rem;
-          display: inline-block;
-        }
-        
-        .holo-button {
-          display: inline-block;
-          padding: 12px 25px;
-          margin-top: 10px;
-          background-color: #ff9500;
-          color: #000;
-          text-decoration: none;
-          border-radius: 5px;
-          font-weight: bold;
-          transition: all 0.3s ease;
-          position: relative;
-          overflow: hidden;
-          z-index: 10;
-          box-shadow: 0 0 15px rgba(255, 165, 0, 0.5);
-        }
-        
-        .holo-button:hover {
-          background-color: #fff;
-          color: #ff9500;
-          transform: translateY(-3px);
-        }
-        
-        .holo-overlay {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(45deg, rgba(255, 165, 0, 0) 0%, rgba(255, 165, 0, 0.1) 50%, rgba(255, 165, 0, 0) 100%);
-          opacity: 0.5;
-          pointer-events: none;
-          transition: all 0.5s ease;
-          mix-blend-mode: screen;
-          transform: translateY(100%);
-        }
-        
-        .holo-overlay.active {
-          animation: holo-scan 3s linear infinite;
-          opacity: 0.8;
-          transform: translateY(0);
-        }
-        
-        .holo-light {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          pointer-events: none;
-          background: radial-gradient(circle at 50% 50%, rgba(255, 165, 0, 0.3) 0%, rgba(255, 165, 0, 0.1) 20%, rgba(255, 165, 0, 0) 50%);
-          mix-blend-mode: screen;
-          opacity: 0.7;
-          transition: background 0.1s ease;
-        }
-        
-        .holo-scanline {
-          position: absolute;
-          bottom: 15px;
-          left: 0;
-          width: 100%;
-          height: 4px;
-          background: linear-gradient(to right, rgba(255, 165, 0, 0), rgba(255, 165, 0, 0.5), rgba(255, 165, 0, 0));
-          animation: scanline 3s linear infinite;
-          opacity: 0.5;
-          pointer-events: none;
-        }
-        
-        .holographic-card.expanded .holo-scanline {
-          opacity: 0.8;
-        }
-        
-        @keyframes holo-scan {
-          0% {
-            background-position: 0% 0%;
-          }
-          100% {
-            background-position: 200% 200%;
-          }
-        }
-        
-        @keyframes scanline {
-          0% {
-            bottom: 0%;
-          }
-          100% {
-            bottom: 100%;
-          }
-        }
-        
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-          .holographic-container {
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-          }
-          
-          .holographic-card {
-            height: 450px;
-          }
-          
-          .holo-content h3 {
-            font-size: 1.5rem;
-          }
-          
-          .holo-project-image {
-            height: 65%;
-          }
-        }
-        
-        @media (max-width: 480px) {
-          .holographic-container {
-            grid-template-columns: 1fr;
-          }
-          
-          .holographic-card {
-            height: 420px;
-          }
-          
-          .holo-project-image {
-            height: 60%;
-          }
-        }
-      `;
-
-    document.head.appendChild(styleSheet);
   }
 }

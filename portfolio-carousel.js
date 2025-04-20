@@ -59,14 +59,14 @@ function setupPortfolioCarousel() {
       title: "TEDx Poster",
       description:
         "Followed the classic Red and Black Tedx theme to create a poster for TEDxIIITD using Figma tools and Adobe Illustrator.",
-      link: "https://www.google.com", // Replace with actual Behance link
+      link: "https://pin.it/5kf5g06Ct",
       color: "rgba(255, 165, 0, 0.35)",
     },
     {
       title: "TEDx Ticket",
       description:
         "Followed the classic Red and Black Tedx theme to create a ticket for TEDxIIITD using Figma tools and Adobe Illustrator.",
-      link: "https://www.google.com", // Replace with actual Behance link
+      link: "https://pin.it/6ssr1mAor",
       color: "rgba(255, 165, 0, 0.4)",
     },
   ];
