@@ -180,6 +180,22 @@
       </footer>
     </div>
 
+    <!-- Live2D Avatar Toggle and Container -->
+    <div id="avatar-toggle-container">
+      <button id="avatar-toggle">💬</button>
+    </div>
+    <div id="live2d-container" style="display: none">
+      <canvas id="live2d-canvas"></canvas>
+      <div id="avatar-dialogue">
+        <div class="message">Hi, I'm Tani-bot! Where would you like to go?</div>
+        <div class="nav-buttons">
+          <button onclick="navigateTo('#hero')">🏠 Home</button>
+          <button onclick="navigateTo('#portfolio')">📂 Projects</button>
+          <button onclick="navigateTo('#contact')">📬 Contact</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.156.1/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
@@ -191,5 +207,6 @@
     <script src="portfolio-carousel.js"></script>
     <script src="project-detail-navigation.js"></script>
     <script src="map.js"></script>
+    <script src="avatar.js"></script>
   </body>
 </html>
