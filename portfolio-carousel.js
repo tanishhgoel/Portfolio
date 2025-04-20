@@ -74,16 +74,22 @@ function setupPortfolioCarousel() {
     // Set initial styles - all bubbles will be visible but positioned differently
     bubble.style.display = "flex";
 
-    // Add click handler - now bubbles can be clicked to navigate
+    // Add click handler with two functionalities:
+    // 1. Navigate carousel if not the active bubble
+    // 2. Open project detail if it's the active bubble and not clicking a link
     bubble.addEventListener("click", (e) => {
-      // Only navigate if clicking on the bubble itself (not a link)
-      if (
-        e.target.tagName !== "A" &&
-        bubble.dataset.index != activeBubbleIndex
-      ) {
+      // If clicking a link, let the link handle it
+      if (e.target.tagName === "A") {
+        return;
+      }
+
+      // If not the active bubble, just navigate the carousel
+      if (parseInt(bubble.dataset.index) !== activeBubbleIndex) {
         e.preventDefault();
         setActiveBubble(parseInt(bubble.dataset.index));
       }
+      // If already active bubble and not a link click, open project detail
+      // The actual navigation will be handled by the project-detail-navigation.js script
     });
 
     carouselTrack.appendChild(bubble);
@@ -206,7 +212,6 @@ function setActiveBubble(index) {
     scale = 1 - Math.min(Math.abs(relativePosition) * 0.15, 0.6);
 
     // Central bubble is fully opaque, others fade out
-    // Central bubble is fully opaque, others fade out
     if (i === index) {
       opacity = 1;
     } else {
@@ -216,15 +221,12 @@ function setActiveBubble(index) {
     // Z-index ensures correct stacking
     zIndex = totalBubbles - Math.abs(relativePosition);
 
-    // CHANGED: Increased X offset from 120px to 200px for better spacing
     // X position is offset from center
     translateX = relativePosition * 300 + "px";
 
-    // CHANGED: Adjusted Y position for a better arc
     // Y position creates slight arc
     translateY = Math.abs(relativePosition) * 100 + "px";
 
-    // CHANGED: Increased Z offset for more pronounced depth
     // Z position creates depth
     translateZ = -Math.abs(relativePosition) * 250 + "px";
 
@@ -243,7 +245,6 @@ function setActiveBubble(index) {
 
   // Add active class to selected
   bubbles[index].classList.add("active");
-
   dots[index].classList.add("active");
 
   // Update the active index
