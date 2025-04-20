@@ -153,9 +153,12 @@
         .getElementById("card-container")
         .appendChild(renderer.domElement);
 
-      // Card dimensions - landscape orientation and larger size
-      const cardWidth = 10;
-      const cardHeight = 6;
+      // Determine if it's the TEDx project
+      const isTedxProject = projectId === "2";
+
+      // Card dimensions
+      const cardWidth = isTedxProject ? 6 : 10;
+      const cardHeight = isTedxProject ? 10 : 6;
       const cardDepth = 0.2;
 
       // Create card geometry
@@ -184,7 +187,7 @@
         function (err) {
           console.error("Error loading image:", err);
           // Fallback to color if image can't be loaded
-          materials[5].color = new THREE.Color(0xff9500);
+          materials[5].color = new THREE.Color(0xffffff);
           materials[5].map = null;
           materials[5].needsUpdate = true;
         }
@@ -213,9 +216,9 @@
         }), // Bottom
         new THREE.MeshBasicMaterial({ map: frontTexture }), // Front - description
         new THREE.MeshBasicMaterial({
-          color: 0xff9500, // Default color until texture loads
-          transparent: true,
-          opacity: 0.8,
+          color: 0xffffff, // No orange tint
+          transparent: false,
+          opacity: 1.0,
         }), // Back - will be replaced with image
       ];
 
@@ -241,6 +244,18 @@
         x: 0,
         y: 0,
       };
+
+      // Create the audio element
+      const audio = new Audio("soothingaudio.mp3");
+      audio.preload = "auto";
+
+      function playDragSound() {
+        if (isDragging && audio.paused) {
+          audio.play().catch((e) => {
+            console.log("Audio play was blocked:", e);
+          });
+        }
+      }
 
       // Event listeners for mouse/touch interaction
       document.addEventListener("mousedown", onMouseDown);
@@ -276,11 +291,15 @@
             x: event.clientX,
             y: event.clientY,
           };
+
+          playDragSound(); // 🔈 Play sound while dragging
         }
       }
 
       function onMouseUp() {
         isDragging = false;
+        audio.pause(); // 🔇 Stop the audio
+        audio.currentTime = 0; // ⏮️ Reset to beginning (optional)
       }
 
       // Touch event handlers
@@ -310,12 +329,15 @@
             x: event.touches[0].clientX,
             y: event.touches[0].clientY,
           };
+
+          playDragSound(); // 🔈 Play sound while dragging on touch
         }
         event.preventDefault();
       }
 
       function onTouchEnd() {
-        isDragging = false;
+        audio.pause(); // 🔇 Stop the audio
+        audio.currentTime = 0;
       }
 
       // Generate texture for the front face with description
