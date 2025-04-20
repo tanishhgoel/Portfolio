@@ -9,6 +9,10 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
   </head>
   <body>
     <!-- Background elements -->
@@ -95,97 +99,83 @@
           </div>
         </div>
       </section>
-      <!-- Contact section -->
-      <section id="contact" class="section">
-        <div class="content">
-          <h2>Get in <span class="highlight">Touch</span></h2>
-          <div class="contact-container">
-            <form
-              id="contact-form"
-              action="https://formsubmit.co/tanish23546@iiitd.ac.in"
-              method="POST"
-            >
-              <input
-                type="hidden"
-                name="_subject"
-                value="Portfolio Contact Form"
-              />
-              <input type="hidden" name="_template" value="table" />
-              <input type="hidden" name="_captcha" value="false" />
-
-              <div class="form-group">
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  placeholder="Your Name"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="Your Email"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <textarea
-                  id="message"
-                  name="message"
-                  placeholder="Your Message"
-                  required
-                ></textarea>
-              </div>
-              <button type="submit" class="submit-btn">Send Message</button>
-            </form>
-
-            <div class="contact-info">
-              <div id="map-container">
-                <div id="map"></div>
-              </div>
-
-              <div class="location-container">
-                <h3>Find <span class="highlight">Me Here</span></h3>
-                <div class="coordinates">28.5494° N, 77.2714° E</div>
-              </div>
-
-              <!-- Map container - increased size -->
-            </div>
+      <!-- Contact Section -->
+      <section id="contact" class="contact-section">
+        <div class="contact-container">
+          <div class="contact-info">
+            <h2>Contact Me</h2>
+            <p>
+              Want to collaborate on a project or just say hi? Feel free to
+              reach out!
+            </p>
+            <ul class="contact-details">
+              <li><i class="fas fa-envelope"></i> tanish23546@iiitd.ac.in</li>
+              <li><i class="fas fa-phone"></i> +91 9315717979</li>
+              <li><i class="fas fa-map-marker-alt"></i> New Delhi, India</li>
+            </ul>
+          </div>
+          <div class="contact-map" id="map-container">
+            <div id="map"></div>
           </div>
         </div>
       </section>
 
-      <!-- New Footer -->
-      <footer class="page-footer">
-        <div class="footer-content">
-          <div class="footer-info">
-            <h3><span class="highlight">Contact</span> Info</h3>
-            <div class="contact-item">
-              <span class="highlight">Address:</span> Okhla Phase 3, New Delhi,
-              India
-            </div>
-            <div class="contact-item">
-              <span class="highlight">Name:</span> Tanish
-            </div>
-            <div class="contact-item">
-              <span class="highlight">Email:</span> tanish23546@iiitd.ac.in
-            </div>
-            <div class="contact-item">
-              <span class="highlight">Campus:</span> IIIT Delhi
-            </div>
+      <!-- Footer Section -->
+      <footer class="footer">
+        <div class="footer-container">
+          <div class="footer-about">
+            <h3>About Me</h3>
+            <p>
+              Passionate about coding and design, I'm interested in backend and
+              API Handling. I love to explore new technologies and work on
+              innovative projects.
+            </p>
           </div>
           <div class="footer-links">
-            <h3><span class="highlight">Quick</span> Links</h3>
-            <div><a href="#hero">Home</a></div>
-            <div><a href="#portfolio">Portfolio</a></div>
-            <div><a href="#contact">Contact</a></div>
+            <h3>Quick Links</h3>
+            <ul>
+              <li>
+                <a href="#hero"><i class="fas fa-home"></i> Home</a>
+              </li>
+              <li>
+                <a href="#portfolio"><i class="fas fa-code"></i> Projects</a>
+              </li>
+              <li>
+                <a href="#contact"
+                  ><i class="fas fa-paper-plane"></i> Contact</a
+                >
+              </li>
+            </ul>
           </div>
-          <div class="footer-bottom">
-            <p>&copy; 2025 Tanish. All Rights Reserved.</p>
+          <div class="footer-social">
+            <h3>Connect</h3>
+            <div class="social-icons">
+              <a
+                href="https://github.com/tanishhgoel"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i class="fab fa-github"></i>
+              </a>
+              <a
+                href="https://www.linkedin.com/in/tanish-goel-7b3251243/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+              <a
+                href="https://www.instagram.com/tanishhgoel/?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw%3D%3D"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i class="fab fa-instagram"></i>
+              </a>
+            </div>
           </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2025 Tanish Goel. All rights reserved.</p>
         </div>
       </footer>
     </div>

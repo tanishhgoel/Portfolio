@@ -317,90 +317,8 @@ p {
   color: #ffa500;
 }
 
-/* Contact Section */
-.contact-container {
-  display: flex;
-  flex-direction: row; /* Force side by side on desktop */
-  gap: 40px;
-  justify-content: space-between;
-  align-items: stretch; /* Make both columns the same height */
-  margin-top: 30px;
-}
-
-#contact-form {
-  flex: 1;
-  min-width: 300px;
-  max-width: 500px;
-}
-
-.contact-info {
-  flex: 1;
-  min-width: 300px;
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-}
-
-/* Improved Map Styles */
-#map-container {
-  width: 100%;
-  height: 350px;
-  border-radius: 10px;
-  overflow: hidden;
-  position: relative;
-  transform-style: preserve-3d;
-  transition: all 0.5s ease;
-  box-shadow: 0 0 15px rgba(255, 165, 0, 0.2);
-  margin-bottom: 10px; /* Add space between map and content below */
-}
-
-/* New Footer Styles */
-.page-footer {
-  background-color: rgba(0, 0, 0, 0.8);
-  border-top: 2px solid rgba(255, 165, 0, 0.3);
-  padding: 30px 0;
-  margin-top: 60px;
-  text-align: center;
-}
-
-.footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-}
-
-.footer-info {
-  flex: 1;
-  min-width: 250px;
-  text-align: left;
-  margin-bottom: 20px;
-}
-
-.footer-links {
-  flex: 1;
-  min-width: 250px;
-  text-align: right;
-  margin-bottom: 20px;
-}
-
-.footer-bottom {
-  width: 100%;
-  text-align: center;
-  padding-top: 20px;
-  border-top: 1px solid rgba(255, 165, 0, 0.2);
-  margin-top: 10px;
-}
-
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .contact-container {
-    flex-direction: column;
-  }
-
   .footer-content {
     flex-direction: column;
   }
@@ -514,12 +432,6 @@ textarea {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .contact-info {
-    width: 100%;
-    max-width: 100%;
-    text-align: center;
-  }
-
   .location-container {
     text-align: center;
   }
@@ -795,5 +707,146 @@ textarea {
   .project-link {
     padding: 10px 20px;
     font-size: 1.1rem;
+  }
+}
+
+/* Contact Section */
+.contact-section {
+  background-color: #111;
+  color: #fff;
+  padding: 60px 40px;
+}
+
+.contact-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  justify-content: space-between;
+}
+
+.contact-info {
+  flex: 1;
+  min-width: 280px;
+}
+
+.contact-info h2 {
+  color: #f97316;
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+
+.contact-details {
+  list-style: none;
+  padding: 0;
+  font-size: 1.1rem;
+}
+
+.contact-details li {
+  margin: 12px 0;
+}
+
+.contact-details i {
+  color: #f97316;
+  margin-right: 10px;
+}
+
+/* Map container */
+.contact-map {
+  flex: 1;
+  min-width: 300px;
+  height: 350px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid #f97316;
+  position: relative;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+/* Footer Section */
+.footer {
+  background-color: #000;
+  color: #ccc;
+  padding: 50px 40px 20px;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.footer-about,
+.footer-links,
+.footer-social {
+  flex: 1;
+  min-width: 250px;
+}
+
+.footer h3 {
+  color: #f97316;
+  margin-bottom: 15px;
+}
+
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links li {
+  margin: 10px 0;
+}
+
+.footer-links a {
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-links a i {
+  margin-right: 8px;
+  color: #f97316;
+}
+
+.footer-links a:hover {
+  color: #f97316;
+}
+
+.footer-social .social-icons {
+  display: flex;
+  gap: 20px;
+  font-size: 1.5rem;
+}
+
+.footer-social a {
+  color: #f97316;
+  transition: transform 0.2s ease;
+}
+
+.footer-social a:hover {
+  transform: scale(1.2);
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 30px;
+  border-top: 1px solid #333;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .contact-container,
+  .footer-container {
+    flex-direction: column;
+  }
+
+  .contact-map {
+    height: 300px;
   }
 }
