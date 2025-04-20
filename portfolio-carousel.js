@@ -33,44 +33,44 @@ function setupPortfolioCarousel() {
   projectsContainer.appendChild(carouselTrack);
 
   // Project data - replace with your actual projects
+  // Project data - replace with your actual projects
   const projects = [
     {
-      title: "Project 1",
+      title: "Angry Birds Game",
       description:
-        "Description of your amazing project goes here. This is the detailed view that appears when the bubble is in focus.",
-      link: "#",
+        "Built the game using LibGDX to implement the GUI. Used Object-Oriented Programming concepts to implement a scalable model and represented those in a UML Diagram.",
+      link: "https://github.com/Adamya10000/angry_birds",
       color: "rgba(255, 165, 0, 0.2)", // Orange with low opacity
     },
     {
-      title: "Project 2",
+      title: "RISCV Assembler & Simulator",
       description:
-        "Interactive web application with 3D elements and animations. Built with Three.js and modern JavaScript.",
-      link: "#",
+        "Built a RISC-V Assembler and Simulator in Python, implementing load/store operations, binary operations, and ISA handling to simulate instruction execution.",
+      link: "https://github.com/tanishhgoel/RISCV",
       color: "rgba(255, 165, 0, 0.25)",
     },
     {
-      title: "Project 3",
+      title: "ByteMe Canteen System",
       description:
-        "E-commerce platform with custom animations and smooth user experience. Responsive design for all devices.",
-      link: "#",
+        "Developed a canteen management system with CLI (Java) and GUI (JavaFX) integration, enabling data transfer through file handling and efficient management using multithreading.",
+      link: "https://github.com/tanishhgoel/ByteMe-CLI-GUI/tree/master",
       color: "rgba(255, 165, 0, 0.3)",
     },
     {
-      title: "Project 4",
+      title: "TEDx Poster",
       description:
-        "Data visualization dashboard that presents complex information in an intuitive interface with interactive charts.",
-      link: "#",
+        "Followed the classic Red and Black Tedx theme to create a poster for TEDxIIITD using Figma tools and Adobe Illustrator.",
+      link: "www.google.com", // Note: You might want to update this to a real link
       color: "rgba(255, 165, 0, 0.35)",
     },
     {
-      title: "Project 5",
+      title: "TEDx Ticket",
       description:
-        "Mobile-first portfolio site with custom animations and effects, showcasing creative development skills.",
-      link: "#",
+        "Followed the classic Red and Black Tedx theme to create a ticket for TEDxIIITD using Figma tools and Adobe Illustrator.",
+      link: "www.google.com", // Note: You might want to update this to a real link
       color: "rgba(255, 165, 0, 0.4)",
     },
   ];
-
   // Create bubble for each project
   projects.forEach((project, index) => {
     const bubble = document.createElement("div");
