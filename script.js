@@ -410,8 +410,6 @@ window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-
-
 // Animate 3D
 function animate3D() {
   requestAnimationFrame(animate3D);
