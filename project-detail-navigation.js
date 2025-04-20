@@ -38,7 +38,7 @@ function setupProjectNavigation() {
       // Prevent default for carousel navigation when using carousel design
       if (
         card.classList.contains("carousel-bubble") &&
-        card.dataset.index != activeBubbleIndex
+        parseInt(card.dataset.index) !== activeBubbleIndex
       ) {
         return; // Let carousel navigation handle this
       }

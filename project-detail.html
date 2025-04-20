@@ -153,20 +153,41 @@
         .getElementById("card-container")
         .appendChild(renderer.domElement);
 
-      // Card dimensions - make it look like a project card
-      const cardWidth = 5;
-      const cardHeight = 7;
+      // Card dimensions - landscape orientation and larger size
+      const cardWidth = 10;
+      const cardHeight = 6;
       const cardDepth = 0.2;
 
       // Create card geometry
       const geometry = new THREE.BoxGeometry(cardWidth, cardHeight, cardDepth);
 
       // Define materials for each face of the card
-      const frontTexture = createTextureForFace(projectTitle, "#FF9500", true);
-      const backTexture = createTextureForFace(
-        "Project Details",
-        "#FF9500",
-        false
+      const frontTexture = createTextureForFront(
+        projectTitle,
+        projectDescription
+      );
+
+      // Determine which image to use based on project ID
+      const imageNumber = parseInt(projectId) + 1;
+      const imageExtension = imageNumber === 2 ? "jpg" : "png";
+      const backTexture = new THREE.TextureLoader().load(
+        `image${imageNumber}.${imageExtension}`,
+        // onLoad callback - make sure texture is properly loaded
+        function (texture) {
+          // Update the back material with the loaded texture
+          materials[5].map = texture;
+          materials[5].needsUpdate = true;
+        },
+        // onProgress callback (not used)
+        undefined,
+        // onError callback
+        function (err) {
+          console.error("Error loading image:", err);
+          // Fallback to color if image can't be loaded
+          materials[5].color = new THREE.Color(0xff9500);
+          materials[5].map = null;
+          materials[5].needsUpdate = true;
+        }
       );
 
       const materials = [
@@ -190,8 +211,12 @@
           transparent: true,
           opacity: 0.3,
         }), // Bottom
-        new THREE.MeshBasicMaterial({ map: frontTexture }), // Front
-        new THREE.MeshBasicMaterial({ map: backTexture }), // Back
+        new THREE.MeshBasicMaterial({ map: frontTexture }), // Front - description
+        new THREE.MeshBasicMaterial({
+          color: 0xff9500, // Default color until texture loads
+          transparent: true,
+          opacity: 0.8,
+        }), // Back - will be replaced with image
       ];
 
       // Create card mesh
@@ -208,7 +233,7 @@
       scene.add(directionalLight);
 
       // Position camera
-      camera.position.z = 10;
+      camera.position.z = 15;
 
       // Variables for rotation
       let isDragging = false;
@@ -293,11 +318,11 @@
         isDragging = false;
       }
 
-      // Generate texture for the card face
-      function createTextureForFace(text, color, isFront) {
+      // Generate texture for the front face with description
+      function createTextureForFront(title, description) {
         const canvas = document.createElement("canvas");
-        canvas.width = 512;
-        canvas.height = 768;
+        canvas.width = 1024; // Higher res for better text quality
+        canvas.height = 512; // Maintain aspect ratio for landscape
         const context = canvas.getContext("2d");
 
         // Fill background with semi-transparent color
@@ -311,63 +336,41 @@
           canvas.width,
           canvas.height
         );
-        gradient.addColorStop(0, color);
+        gradient.addColorStop(0, "#FF9500");
         gradient.addColorStop(1, "rgba(255, 149, 0, 0.3)");
 
         context.strokeStyle = gradient;
-        context.lineWidth = 15;
+        context.lineWidth = 20;
         context.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
 
-        // Add content
-        context.fillStyle = "#FFFFFF";
-        context.font = "40px Arial";
+        // Add title
+        context.fillStyle = "#FF9500";
+        context.font = "bold 60px Arial";
         context.textAlign = "center";
-        context.fillText(text, canvas.width / 2, 100);
+        context.fillText(title, canvas.width / 2, 100);
 
-        if (isFront) {
-          // Add project image placeholder to front
-          context.fillStyle = "rgba(255, 149, 0, 0.2)";
-          context.fillRect(100, 160, canvas.width - 200, 300);
+        // Underline
+        context.beginPath();
+        context.moveTo(canvas.width / 4, 120);
+        context.lineTo((canvas.width / 4) * 3, 120);
+        context.strokeStyle = "rgba(255, 149, 0, 0.7)";
+        context.lineWidth = 3;
+        context.stroke();
 
-          // Add image text
-          context.fillStyle = "#FFFFFF";
-          context.font = "30px Arial";
-          context.fillText("Project Image", canvas.width / 2, 300);
+        // Add description
+        context.fillStyle = "#FFFFFF";
+        context.font = "30px Arial";
+        context.textAlign = "left";
+        wrapText(context, description, 50, 180, canvas.width - 100, 40);
 
-          // Add some feature text
-          context.font = "24px Arial";
-          context.fillText("Main Features:", canvas.width / 2, 500);
-
-          context.font = "20px Arial";
-          context.fillText("• Feature One", canvas.width / 2, 550);
-          context.fillText("• Feature Two", canvas.width / 2, 590);
-          context.fillText("• Feature Three", canvas.width / 2, 630);
-        } else {
-          // Back side with more details
-          context.font = "20px Arial";
-          context.textAlign = "left";
-
-          // Add description
-          wrapText(
-            context,
-            projectDescription,
-            50,
-            180,
-            canvas.width - 100,
-            25
-          );
-
-          // Add tech stack
-          context.font = "bold 24px Arial";
-          context.textAlign = "center";
-          context.fillText("Technologies Used:", canvas.width / 2, 500);
-
-          context.font = "20px Arial";
-          context.fillText(
-            "HTML • CSS • JavaScript • WebGL",
-            canvas.width / 2,
-            540
-          );
+        // Add holographic effects - subtle horizontal lines
+        for (let y = 0; y < canvas.height; y += 8) {
+          context.beginPath();
+          context.moveTo(0, y);
+          context.lineTo(canvas.width, y);
+          context.strokeStyle = `rgba(255, 255, 255, ${Math.random() * 0.05})`;
+          context.lineWidth = 1;
+          context.stroke();
         }
 
         const texture = new THREE.CanvasTexture(canvas);
@@ -414,7 +417,7 @@
         const bgGeometry = new THREE.BufferGeometry();
         const bgVertices = [];
 
-        for (let i = 0; i < 1000; i++) {
+        for (let i = 0; i < 1500; i++) {
           const x = (Math.random() - 0.5) * 2000;
           const y = (Math.random() - 0.5) * 2000;
           const z = (Math.random() - 0.5) * 2000;
@@ -427,7 +430,7 @@
         );
 
         const bgMaterial = new THREE.PointsMaterial({
-          size: 2,
+          size: 3,
           color: 0xff9500,
           transparent: true,
           opacity: 0.5,
@@ -441,11 +444,52 @@
 
       const particles = createParticles();
 
+      // Add holographic effect with scanlines
+      function addHolographicEffect() {
+        const scanlineGeometry = new THREE.PlaneGeometry(
+          cardWidth + 1,
+          cardHeight + 1
+        );
+        const scanlineMaterial = new THREE.ShaderMaterial({
+          transparent: true,
+          uniforms: {
+            time: { value: 0 },
+          },
+          vertexShader: `
+            varying vec2 vUv;
+            void main() {
+              vUv = uv;
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+          `,
+          fragmentShader: `
+            uniform float time;
+            varying vec2 vUv;
+            void main() {
+              float scanline = sin(vUv.y * 100.0 + time * 5.0) * 0.5 + 0.5;
+              float glow = sin(time) * 0.1 + 0.1;
+              gl_FragColor = vec4(1.0, 0.6, 0.0, scanline * 0.1 + glow);
+            }
+          `,
+        });
+
+        const scanlines = new THREE.Mesh(scanlineGeometry, scanlineMaterial);
+        scanlines.position.z = 0.11; // Slightly in front of the card
+        card.add(scanlines);
+
+        return scanlineMaterial;
+      }
+
+      const holographicMaterial = addHolographicEffect();
+
       // Animation loop
       function animate() {
         requestAnimationFrame(animate);
 
         floatAnimation();
+
+        // Update holographic effect
+        holographicMaterial.uniforms.time.value = Date.now() * 0.001;
 
         // Rotate particles slowly
         particles.rotation.y += 0.0002;
@@ -466,7 +510,7 @@
         canvas.height = window.innerHeight;
 
         const particles = [];
-        const particleCount = 50;
+        const particleCount = 70;
 
         // Create particles
         for (let i = 0; i < particleCount; i++) {
@@ -511,6 +555,9 @@
           canvas.height = window.innerHeight;
         });
       }
+
+      // Start with a slight rotation so user can see it's 3D
+      card.rotation.y = 0.3;
     </script>
   </body>
 </html>
